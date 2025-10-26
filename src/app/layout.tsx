@@ -6,6 +6,7 @@ import { ReactNode } from 'react';
 const roboto = Roboto({
   variable: '--font-roboto-sans',
   subsets: ['latin'],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -21,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={roboto.className}>{children}</body>
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }

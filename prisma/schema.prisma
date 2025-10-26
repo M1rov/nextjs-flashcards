@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model LanguagePair {
+  id         String       @id @default(uuid())
+  sourceLang String       @db.Char(2)
+  targetLang String       @db.Char(2)
+  createdAt  DateTime     @default(now())
+  Collection Collection[]
+
+  @@unique([sourceLang, targetLang])
+}
+
+model Collection {
+  id             String   @id @default(uuid())
+  userId         String
+  name           String
+  description    String?
+  languagePairId String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  languagePair LanguagePair @relation(fields: [languagePairId], references: [id])
+  Card         Card[]
+}
+
+model Card {
+  id           String   @id @default(uuid())
+  userId       String
+  collectionId String
+  frontText    String
+  backText     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  collection   Collection     @relation(fields: [collectionId], references: [id])
+  UsageExample UsageExample[]
+}
+
+model UsageExample {
+  id     String @id @default(uuid())
+  cardId String
+  text   String
+
+  card Card @relation(fields: [cardId], references: [id])
+}
